@@ -13,6 +13,7 @@ document.addEventListener('DOMContentLoaded',() => {
   const restartButton = document.querySelector("#restartButton");
   const resultsImage = document.getElementById('results-image');
   const resultsText = document.getElementById('results-text');
+  const backButton = document.getElementById('backButton')
 
   // End view elements
   const resultContainer = document.querySelector("#result");
@@ -33,7 +34,7 @@ document.addEventListener('DOMContentLoaded',() => {
     new Question("What is the capital of France?", ["Miami", "Paris", "Oslo", "Rome"], "Paris", 1),
     new Question("Who created JavaScript?", ["Plato", "Brendan Eich", "Lea Verou", "Bill Gates"], "Brendan Eich", 2),
     new Question("What is the mass–energy equivalence equation?", ["E = mc^2", "E = m*c^2", "E = m*c^3", "E = m*c"], "E = mc^2", 3),
-    new Question('who dis?',['Keanu Reeves','Mr. Potato Head','the Goodyear Blimp','Brendan Eich'],'keanu',1,'picture','/img/50.jpeg'),
+    new Question('who dis?',['Keanu Reeves','Mr. Potato Head','the Goodyear Blimp','Brendan Eich'],'Keanu Reeves',1,'picture','/img/50.jpeg'),
     new Question('what dis?',['a horse','pizza','Keanu Reeves sneezing','French'],'a horse',1,'sound','/sound/horse.ogg'),
     new Question('nevva gonna what?',['give you up','Keanu Reeves','learn javascript','eat broccolli'],'give you up',1,'video','/video/never.mp4'),
     // Add more questions here
@@ -43,7 +44,7 @@ document.addEventListener('DOMContentLoaded',() => {
 
   /************  QUIZ INSTANCE  ************/
   
-  const quizDuration = 120
+  const quizDuration = 1200
   // Create a new Quiz instance object
   const quiz = new Quiz(questions, quizDuration, quizDuration);
   // Shuffle the quiz questions
@@ -97,6 +98,7 @@ document.addEventListener('DOMContentLoaded',() => {
 
   nextButton.addEventListener("click", nextButtonHandler);
   restartButton.addEventListener("click", restartButtonHandler);
+  backButton.addEventListener("click", backButtonHandler);
 
   /************  FUNCTIONS  ************/
 
@@ -106,12 +108,21 @@ document.addEventListener('DOMContentLoaded',() => {
 
   function showQuestion() {
 
+    console.log('ind',quiz.currentQuestionIndex);
+
     // If the quiz has ended, show the results
     if (quiz.hasEnded()) {
       showResults();
       return;
     }
     
+
+
+    if (quiz.currentQuestionIndex === 0 ) {
+      backButton.disabled = true
+    } else {
+      backButton.disabled = false
+    }
 
     // Clear the previous question text and question choices
     questionContainer.innerText = quiz.currentQuestionIndex;
@@ -214,6 +225,12 @@ document.addEventListener('DOMContentLoaded',() => {
         nextButton.disabled = false
       }
     }))
+
+    console.log(quiz.answersMatrix[quiz.currentQuestionIndex]);
+    if (quiz.answersMatrix[quiz.currentQuestionIndex].answer !== null) {
+      document.querySelector(`[value="${quiz.answersMatrix[quiz.currentQuestionIndex].answer}"]`).checked = true
+      nextButton.disabled = false
+    }
   }
 
 
@@ -259,6 +276,18 @@ document.addEventListener('DOMContentLoaded',() => {
     } 
   }  
 
+  function backButtonHandler() {
+    quiz.moveToPreviousQuestion();
+          //remove any video elements
+          if (document.getElementsByClassName('video-question-container')[0]){
+            document.getElementsByClassName('video-question-container')[0].remove()
+          }   
+          // remove any sound elements   
+          if (document.getElementsByClassName('sound-question-container')[0]){
+            document.getElementsByClassName('sound-question-container')[0].remove()
+          }
+    showQuestion()
+  }
 
   function showResults() {
 
@@ -272,7 +301,8 @@ document.addEventListener('DOMContentLoaded',() => {
       document.getElementsByClassName('sound-question-container')[0].remove()
     }
 
-    const resultPercentage = Math.round((quiz.correctAnswers / quiz.questions.length) * 100)
+    const correctAnswersCount = quiz.answersMatrix.reduce((acc,cur) => acc + cur.score,0)
+    const resultPercentage = Math.round((correctAnswersCount / quiz.questions.length) * 100)
     // YOUR CODE HERE:
     //
     // 1. Hide the quiz view (div#quizView)
@@ -330,7 +360,7 @@ document.addEventListener('DOMContentLoaded',() => {
                                       : '';
     
     // 3. Update the result container (div#result) inner text to show the number of correct answers out of total questions
-    resultContainer.innerText = `You scored ${quiz.correctAnswers} out of ${quiz.questions.length} correct answers!
+    resultContainer.innerText = `You scored ${correctAnswersCount} out of ${quiz.questions.length} correct answers!
     
     You ${quiz.timeRemaining === 0 ? 'ran out of time' : 'took ' + minutesRemainingMessage + ' ' + secondsRemainingMessage + ' to finish the quiz!'}`; // This value is hardcoded as a placeholder
 

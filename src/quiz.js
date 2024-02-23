@@ -6,6 +6,7 @@ class Quiz {
         this.timeRemaining = timeRemaining;
         this.correctAnswers = 0;
         this.currentQuestionIndex = 0;
+        this.answersMatrix = Array.from(' '.repeat(questions.length)).map(elem => ({answer:null,score:0}))
     }
 
     getQuestion() {
@@ -15,19 +16,25 @@ class Quiz {
     moveToNextQuestion() {
         this.currentQuestionIndex++
     }
+    moveToPreviousQuestion() {
+      this.currentQuestionIndex--
+    }
 
     shuffleQuestions() {
         this.questions.sort((a,b) => Math.random() >= Math.random() ? -1 : 1 )
     }
 
     checkAnswer(answer) {
+        this.answersMatrix[this.currentQuestionIndex].answer = answer
         if (answer === this.questions[this.currentQuestionIndex].answer) {
             this.correctAnswers++
-            //console.log('correct answer', answer);
+            this.answersMatrix[this.currentQuestionIndex].score = 1
+            console.log('correct answers matrix', this.answersMatrix);
             return true
         }
         else {
             //console.log('no, wrong,', answer);
+            this.answersMatrix[this.currentQuestionIndex].score = 0
             return false
         }
     }
