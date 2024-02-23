@@ -44,7 +44,7 @@ document.addEventListener('DOMContentLoaded',() => {
 
   /************  QUIZ INSTANCE  ************/
   
-  const quizDuration = 1200
+  const quizDuration = 120
   // Create a new Quiz instance object
   const quiz = new Quiz(questions, quizDuration, quizDuration);
   // Shuffle the quiz questions
