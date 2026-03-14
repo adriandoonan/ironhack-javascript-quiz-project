@@ -21,10 +21,19 @@
 
         <div class="content">
           <div id="question"></div>
-          <ul id="choices"></ul>
+          <!-- audio elements will be inserted here -->
+          <section id="choice-and-media">
+            <!-- video elements will be inserted here -->
+            <img id="image-question-image" src="" style="display: none;"/>
+            <ul id="choices"></ul>
+          </section>
         </div>
         <div id="timeRemaining">Remaining Time: <span>00:00</span></div>
-        <button id="nextButton" class="button-primary">Answer</button>
+        <section id="game-buttons-container">
+          <div class="button-spacer"></div>
+          <button id="nextButton" class="button-primary " disabled>Answer</button>
+          <button id="backButton" class="button-tertiary">back</button>
+        </section>
       </div>
 
       <!-- End Quiz View -->
@@ -37,9 +46,11 @@
         <p class="emphasis">Results</p>
         <div class="content">
           <div id="result"></div>
+          <img src="/img/blank.png" alt="image" id="results-image"/>
+          <p id="results-text"></p>
         </div>
         <!-- The below 'Restart Quiz' button is commented out because it is not used initially -->
-        <!-- <button id="restartButton" class="button-secondary">Restart Quiz</button> -->
+        <button id="restartButton" class="button-secondary">Restart Quiz</button>
       </div>
     </div>
 
